@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules\Password;
@@ -15,7 +16,7 @@ class UsersService
     /**
      * @throws ValidationException
      */
-    public function showAll(Request $request): MessageBag|User
+    public function showAll(Request $request): MessageBag|Paginator
     {
         $request->merge(['order', strtolower($request->get('order'))]);
         $validator = Validator::make($request->all(), [
@@ -25,7 +26,7 @@ class UsersService
         ]);
         if ($validator->passes()) {
             $validated = $validator->validated();
-            $usersList = User::orderBy('name', $validated['order'] ?? null);
+            $usersList = User::orderBy('name', $validated['order'] ?? 'desc');
             if (isset($validated['name'])) {
                 $usersList = $usersList->where('name', 'LIKE', '%' . $validated["name"] . '%');
             }
