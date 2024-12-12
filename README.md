@@ -21,5 +21,6 @@ REST API on Laravel with project containerization
 4) run ```docker-compose run --rm composer update``` (IF YOU NEED)
 5) run ```docker-compose run --rm npm run dev```
 6) run ```docker-compose run --rm artisan migrate --seed```
-   
+
+### for test run ```composer test```
    
