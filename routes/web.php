@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\ForceJsonMiddleware;
+
+Route::get('/', static function () {
+});
+
+Route::group(['middleware' => [ForceJsonMiddleware::class]], static function () {
+});
+
+Route::group(['middleware' => ['auth']], static function () {
+});
+
+//Route::middleware([
+//    'auth:sanctum',
+//    config('jetstream.auth_session'),
+//    'verified',
+//])->group(function () {
+//    Route::get('/dashboard', function () {
+//        return view('dashboard');
+//    })->name('dashboard');
+//});
