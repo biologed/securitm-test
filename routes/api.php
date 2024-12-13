@@ -4,11 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\ApiControllers\UsersController;
 use App\Http\Middleware\ForceJsonMiddleware;
 
-Route::group(['middleware' => [ForceJsonMiddleware::class]], static function () {
-    Route::get('users', [UsersController::class, 'index'])->name('users.index');
-    Route::post('users', [UsersController::class, 'store'])->name('users.store');
-    Route::get('users/{id}', [UsersController::class, 'show'])->name('users.show');
-    Route::put('users/{id}', [UsersController::class, 'update'])->name('users.update');
-    Route::delete('users/{id}', [UsersController::class, 'destroy'])->name('users.destroy');
+Route::name('api.users.')->middleware([ForceJsonMiddleware::class])->group(static function () {
+    Route::get('users', [UsersController::class, 'index'])->name('index');
+    Route::post('users', [UsersController::class, 'store'])->name('store');
+    Route::get('users/{id}', [UsersController::class, 'show'])->name('show');
+    Route::put('users/{id}', [UsersController::class, 'update'])->name('update');
+    Route::delete('users/{id}', [UsersController::class, 'destroy'])->name('destroy');
 });
 
