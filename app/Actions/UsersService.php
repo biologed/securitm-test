@@ -45,7 +45,7 @@ class UsersService
     /**
      * @throws ValidationException
      */
-    public function showOne(string|int $id, Request $request): MessageBag|User
+    public function showOne(int $id, Request $request): MessageBag|User
     {
         $request->merge(['id' => $id]);
         $validator = Validator::make($request->all(), [
@@ -109,7 +109,7 @@ class UsersService
     /**
      * @throws ValidationException
      */
-    public function delete(string|int $id, Request $request): MessageBag
+    public function delete(int $id, Request $request): MessageBag
     {
         $request->merge(['id' => $id]);
         $validator = Validator::make($request->all(), [

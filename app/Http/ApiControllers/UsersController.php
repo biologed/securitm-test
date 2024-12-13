@@ -44,7 +44,7 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param string|int $id
+     * @param int $id
      * @param Request $request
      *
      * @return Response
@@ -72,7 +72,7 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param string|int $id
+     * @param int $id
      * @param Request $request
      *
      * @return Response
