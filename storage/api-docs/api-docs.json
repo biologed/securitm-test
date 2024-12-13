@@ -1,0 +1,20 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My First API",
+        "version": "0.1"
+    },
+    "paths": {
+        "/api/user/": {
+            "get": {
+                "summary": "Display a listing of the resource.",
+                "operationId": "4e412828876c06e2c97512369e271d8c",
+                "responses": {
+                    "200": {
+                        "description": "The data"
+                    }
+                }
+            }
+        }
+    }
+}

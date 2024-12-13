@@ -6,18 +6,21 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "darkaonline/l5-swagger": "^8.6",
+        "fakerphp/faker": "^1.23",
         "laravel/framework": "^11.28",
         "laravel/ui": "^4.5",
         "livewire/livewire": "^3.0",
-        "fakerphp/faker": "^1.23"
+        "wotz/laravel-swagger-ui": "^1.1",
+        "zircote/swagger-php": "^4.11"
     },
     "require-dev": {
         "laravel/pint": "^1.18",
         "laravel/sail": "^1.37",
+        "laravel/tinker": "^2.10",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.5",
-        "phpunit/phpunit": "^11.4",
-        "laravel/tinker": "^2.10"
+        "phpunit/phpunit": "^11.4"
     },
     "autoload": {
         "psr-4": {
@@ -49,6 +52,12 @@
         ],
         "test" : [
             "@php artisan test"
+        ],
+        "docker-compose-seed" : [
+            "docker-compose run --rm artisan db:seed"
+        ],
+        "swaggger-regenerate" : [
+            "@php artisan l5-swagger:generate"
         ]
     },
     "extra": {

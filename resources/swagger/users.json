@@ -1,0 +1,263 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Users API",
+        "description": "Description of users api endpoints",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/user": {
+            "get": {
+                "summary": "Display a listing of the resource.",
+                "operationId": "35adc7828e53699cb89f40c8d050755c",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": null,
+                        "description": "The page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Store a newly created resource in storage.",
+                "operationId": "954c6ea3d9216a12c39f313a61f9fdd6",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": null,
+                        "description": "The user name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ip",
+                        "in": null,
+                        "description": "The user ip",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "comment",
+                        "in": null,
+                        "description": "The comment for user description",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": null,
+                        "description": "The user email",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": null,
+                        "description": "The user password",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Create user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/{id}": {
+            "get": {
+                "summary": "Display the specified resource.",
+                "operationId": "1fdc44906dc2945f37354445d148ec71",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": null,
+                        "description": "The user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show user by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update the specified resource in storage.",
+                "operationId": "04488960ecc8b7f36951a8d4c2b1ed3e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": null,
+                        "description": "The user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": null,
+                        "description": "The user name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ip",
+                        "in": null,
+                        "description": "The user ip",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "comment",
+                        "in": null,
+                        "description": "The comment for user description",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": null,
+                        "description": "The user email",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": null,
+                        "description": "The user password",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update user by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove the specified resource from storage.",
+                "operationId": "24ce8ac62e41fa1cc4076cde6ff12e23",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": null,
+                        "description": "The user id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete user by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "users": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "test@test.com"
+                    },
+                    "ip": {
+                        "type": "string",
+                        "example": "192.168.1.1"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password"
+                    },
+                    "remember_token": {
+                        "type": "string",
+                        "example": "token"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

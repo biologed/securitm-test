@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
+use OpenApi\Attributes as OAT;
+
+#[OAT\Info(version: '1.0', description: 'Description of users api endpoints', title: 'Users API')]
 class UsersController extends Controller
 {
     public function __construct(
@@ -23,6 +26,9 @@ class UsersController extends Controller
      * @return Response
      * @throws ValidationException
      */
+    #[OAT\Get(path: '/api/user')]
+    #[OAT\Response(response: '200', description: 'All users', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
+    #[OAT\Parameter(name: 'page', description: 'The page number', required: false, schema: new OAT\Schema(type: 'integer'))]
     public function index(Request $request): Response
     {
         return response($this->usersService->showAll($request));
@@ -36,6 +42,13 @@ class UsersController extends Controller
      * @return Response
      * @throws ValidationException
      */
+    #[OAT\Post(path: '/api/user')]
+    #[OAT\Response(response: '200', description: 'Create user', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
+    #[OAT\Parameter(name: 'name', description: 'The user name', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'ip', description: 'The user ip', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'comment', description: 'The comment for user description', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'email', description: 'The user email', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'password', description: 'The user password', required: false, schema: new OAT\Schema(type: 'string'))]
     public function store(Request $request): Response
     {
         return response($this->usersService->save($request));
@@ -50,7 +63,10 @@ class UsersController extends Controller
      * @return Response
      * @throws ValidationException
      */
-    public function show(string|int $id, Request $request): Response
+    #[OAT\Get(path: '/api/user/{id}')]
+    #[OAT\Response(response: '200', description: 'Show user by id', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
+    #[OAT\Parameter(name: 'id', description: 'The user id', required: true, schema: new OAT\Schema(type: 'integer'))]
+    public function show(int $id, Request $request): Response
     {
         return response($this->usersService->showOne($id, $request));
     }
@@ -64,6 +80,14 @@ class UsersController extends Controller
      * @return Response
      * @throws ValidationException
      */
+    #[OAT\Put(path: '/api/user/{id}')]
+    #[OAT\Response(response: '200', description: 'Update user by id', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
+    #[OAT\Parameter(name: 'id', description: 'The user id', required: true, schema: new OAT\Schema(type: 'integer'))]
+    #[OAT\Parameter(name: 'name', description: 'The user name', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'ip', description: 'The user ip', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'comment', description: 'The comment for user description', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'email', description: 'The user email', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'password', description: 'The user password', required: false, schema: new OAT\Schema(type: 'string'))]
     public function update(int $id, Request $request): Response
     {
         return response($this->usersService->update($id, $request));
@@ -78,7 +102,10 @@ class UsersController extends Controller
      * @return Response
      * @throws ValidationException
      */
-    public function destroy(string|int $id, Request $request): Response
+    #[OAT\Delete(path: '/api/user/{id}')]
+    #[OAT\Response(response: '200', description: 'Delete user by id', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
+    #[OAT\Parameter(name: 'id', description: 'The user id', required: true, schema: new OAT\Schema(type: 'integer'))]
+    public function destroy(int $id, Request $request): Response
     {
         return response($this->usersService->delete($id, $request));
     }

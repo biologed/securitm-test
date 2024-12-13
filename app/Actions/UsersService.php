@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use OpenApi\Annotations as OA;
 
 class UsersService
 {
@@ -106,7 +107,9 @@ class UsersService
         return $validator->messages();
     }
 
+
     /**
+     *
      * @throws ValidationException
      */
     public function delete(int $id, Request $request): MessageBag

@@ -22,5 +22,8 @@ REST API on Laravel with project containerization
 5) run ```docker-compose run --rm npm run dev```
 6) run ```docker-compose run --rm artisan migrate --seed```
 
-### for test run ```composer test```
-   
+> [!NOTE]
+> for run tests ```composer test```
+
+> [!NOTE]
+> Swagger is available at localhost/swagger
