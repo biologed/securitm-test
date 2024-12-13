@@ -58,15 +58,15 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param string|int $id
+     * @param int $id
      * @param Request $request
      *
      * @return Response
      * @throws ValidationException
      */
-    public function update(string|int $id, Request $request): Response
+    public function update(int $id, Request $request): Response
     {
-        return response($this->usersService->save($request, $id));
+        return response($this->usersService->update($id, $request));
     }
 
     /**

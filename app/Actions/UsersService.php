@@ -27,14 +27,18 @@ class UsersService
             'name' => ['string', 'present_with:order', 'max:255'],
             'order' => ['string', 'lowercase', 'in:desc,asc'],
         ]);
+
         if ($validator->passes()) {
             $validated = $validator->validated();
             $usersList = User::orderBy('name', $validated['order'] ?? 'desc');
+
             if (isset($validated['name'])) {
                 $usersList = $usersList->where('name', 'LIKE', '%' . $validated["name"] . '%');
             }
+
             return $usersList->simplePaginate(self::ITEM_PER_PAGE, ['*'], 'page', $validated['page'] ?? 1);
         }
+
         return $validator->messages();
     }
 
@@ -47,54 +51,56 @@ class UsersService
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'int', "exists:users,id,id,$request->id"],
         ]);
+
         if ($validator->passes()) {
             $validated = $validator->validated();
             return User::find($validated['id']);
         }
+
         return $validator->messages();
     }
 
     /**
      * @throws ValidationException
-     * Попытка объединить создание и обновление сущности users возможно,
-     * или даже скорее всего вызывает больше вопросов, чем ответов (+ required_if в валидаторе).
-     * После некоторого курения кода пришел к выводу, что лучше разделить на 2 метода,
-     * однако тогда встает вопрос зачем было заводить сервисный слой
      */
-    public function save(Request $request, string|int $id = null): MessageBag|User
+    public function save(Request $request): MessageBag|User
     {
-        if ($id > 0) {
-            //Для корректного обновления
-            $request->merge(['id' => $id, 'save_method' => 'update']);
-        }
         $validator = Validator::make($request->all(), [
-            'id' => ['required_if:save_method,update', 'int', "exists:users,id,id,$request->id"],
-            'name' => ['required_if:save_method,null', 'string', 'max:255'],
-            'ip' => ['required_if:save_method,null', 'ip', 'max:255'],
-            'comment' => ['required_if:save_method,null', 'string', 'max:255'],
-            'email' => ['required_if:save_method,null', 'email', 'max:255', 'unique:users'],
-            'password' => ['required_if:save_method,null', 'string', Password::default()],
+            'name' => ['required', 'string', 'max:255'],
+            'ip' => ['required', 'ip', 'max:255'],
+            'comment' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', Password::default()],
         ]);
 
-        //Создаем пользователя только из валидных полей
         if ($validator->passes()) {
             $validated = $validator->validated();
-            if ($request->save_method === 'update') {
-                $user = User::find($validated['id']);
-                $user->name = $validated['name'] ?? $user->name;
-                $user->ip = $validated['ip'] ?? $user->ip;
-                $user->comment = $validated['comment'] ?? $user->comment;
-                $user->password = $validated['password'] ?? $user->password;
-                $user->save();
-                return $user;
-            }
-            return User::create([
-                'name' => $validated['name'],
-                'ip' => $validated['ip'],
-                'comment' => $validated['comment'],
-                'email' => $validated['email'],
-                'password' => $validated['password'],
-            ]);
+            return User::create($validated);
+        }
+
+        return $validator->messages();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function update(int $id, Request $request): MessageBag|User
+    {
+        $request->merge(['id' => $id]);
+        $validator = Validator::make($request->all(), [
+            'id' => ['required', 'int', "exists:users,id,id,$request->id"],
+            'name' => ['required_without_all:ip,comment,email,password', 'string', 'max:255'],
+            'ip' => ['required_without_all:name,comment,email,password', 'ip', 'max:255'],
+            'comment' => ['required_without_all:name,ip,email,password', 'string', 'max:255'],
+            'email' => ['required_without_all:name,ip,comment,password', 'email', 'max:255', 'unique:users'],
+            'password' => ['required_without_all:name,ip,comment,email', 'string', Password::default()],
+        ]);
+
+        if ($validator->passes()) {
+            $validated = $validator->validated();
+            $user = User::find($validated['id']);
+            $user->update($validated);
+            return $user;
         }
 
         return $validator->messages();
@@ -109,6 +115,7 @@ class UsersService
         $validator = Validator::make($request->all(), [
             'id' => ['required', 'int', "exists:users,id,id,$request->id"],
         ]);
+
         if ($validator->passes()) {
             $user = User::find($id);
             $user->delete();
