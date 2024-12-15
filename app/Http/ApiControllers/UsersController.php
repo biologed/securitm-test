@@ -2,21 +2,20 @@
 
 namespace App\Http\ApiControllers;
 
-use Illuminate\Http\Response;
 use App\Http\Requests\Api\Users\DeleteRequest;
 use App\Http\Requests\Api\Users\GetUserRequest;
 use App\Http\Requests\Api\Users\GetUsersRequest;
 use App\Http\Requests\Api\Users\SaveRequest;
 use App\Http\Requests\Api\Users\UpdateRequest;
-use App\Http\ApiControllers\Repositories\UsersRepository;
-
+use App\Repositories\Users\UsersCacheRepository;
+use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 
 #[OAT\Info(version: '1.0', description: 'Description of users api endpoints', title: 'Users API')]
 class UsersController extends Controller
 {
     public function __construct(
-        public UsersRepository $usersService
+        public UsersCacheRepository $usersService
     ) {
         parent::__construct();
     }
@@ -31,6 +30,9 @@ class UsersController extends Controller
     #[OAT\Get(path: '/api/user')]
     #[OAT\Response(response: '200', description: 'All users', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
     #[OAT\Parameter(name: 'page', description: 'The page number', required: false, schema: new OAT\Schema(type: 'integer'))]
+    #[OAT\Parameter(name: 'per_page', description: 'Number of users per page', required: false, schema: new OAT\Schema(type: 'integer'))]
+    #[OAT\Parameter(name: 'order', description: 'Order users by tag', required: false, schema: new OAT\Schema(type: 'string'))]
+    #[OAT\Parameter(name: 'sort', description: 'Sort users by order', required: false, schema: new OAT\Schema(type: 'string'))]
     public function index(GetUsersRequest $request): Response
     {
         $validated = $request->validated();
@@ -72,7 +74,7 @@ class UsersController extends Controller
     public function show(GetUserRequest $request): Response
     {
         $validated = $request->validated();
-        $response = $this->usersService->getById($validated);
+        $response = $this->usersService->getById($validated['id']);
         return response($response);
     }
 
@@ -111,7 +113,7 @@ class UsersController extends Controller
     public function destroy(DeleteRequest $request): Response
     {
         $validated = $request->validated();
-        $this->usersService->delete($validated);
+        $this->usersService->delete($validated['id']);
         return response([]);
     }
 }
