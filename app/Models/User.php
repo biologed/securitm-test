@@ -1,8 +1,9 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Events\UserDeleted;
+use App\Events\UserSaved;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -16,7 +17,6 @@ use OpenApi\Attributes as OAT;
 #[OAT\Schema(schema: 'users')]
 class User extends Authenticatable
 {
-
     /** @use HasFactory<UserFactory> */
     use HasFactory;
     use Notifiable;
@@ -55,6 +55,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token'
+    ];
+
+    protected $dispatchesEvents = [
+        'saved' => UserSaved::class,
+        'deleted' => UserDeleted::class,
     ];
 
     /**

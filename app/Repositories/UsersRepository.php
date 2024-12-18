@@ -1,17 +1,23 @@
 <?php
 
-namespace App\Repositories\Users;
+namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Pagination\Paginator;
 
-class UsersRepository implements UsersRepositoryInterface
+class UsersRepository
 {
     public function __construct(
-        protected User $model
+        private User $model
     ) {}
 
-    public function all(array $data): Paginator
+    public function setModel(User $model): self
+    {
+        $this->model = $model;
+        return $this;
+    }
+
+    public function getAll(array $data): Paginator
     {
         return $this->model::orderBy($data['order'], $data['sort'])
             ->simplePaginate($data['per_page'], ['*'], 'page', $data['page']);
@@ -27,15 +33,13 @@ class UsersRepository implements UsersRepositoryInterface
         return $this->model::create($data);
     }
 
-    public function update(array $data): void
+    public function update(array $data): bool
     {
-        $this->model = $this->getById($data['id']);
-        $this->model->update($data);
+        return $this->model->update($data);
     }
 
-    public function delete(int $id): void
+    public function delete(): void
     {
-        $this->model = $this->getById($id);
         $this->model->delete();
     }
 }

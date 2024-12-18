@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GetUsersRequest extends FormRequest
+class GetAllRequest extends FormRequest
 {
     /**
      * @link ApiUsersControllerTest::test_api_check_show_users_per_page_value_equals_five() fix the test if you change this value

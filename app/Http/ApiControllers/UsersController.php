@@ -3,11 +3,13 @@
 namespace App\Http\ApiControllers;
 
 use App\Http\Requests\Api\Users\DeleteRequest;
-use App\Http\Requests\Api\Users\GetUserRequest;
-use App\Http\Requests\Api\Users\GetUsersRequest;
-use App\Http\Requests\Api\Users\SaveRequest;
-use App\Http\Requests\Api\Users\UpdateRequest;
-use App\Repositories\Users\UsersCacheRepository;
+use App\Http\Requests\Api\Users\GetRequest;
+use App\Http\Requests\Api\Users\GetAllRequest;
+use App\Http\Requests\Api\Users\PostRequest;
+use App\Http\Requests\Api\Users\PutRequest;
+use App\Services\UsersService;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OAT;
 
@@ -15,7 +17,7 @@ use OpenApi\Attributes as OAT;
 class UsersController extends Controller
 {
     public function __construct(
-        public UsersCacheRepository $usersService
+        private readonly UsersService $usersService
     ) {
         parent::__construct();
     }
@@ -23,7 +25,7 @@ class UsersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param GetUsersRequest $request
+     * @param GetAllRequest $request
      *
      * @return Response
      */
@@ -33,17 +35,18 @@ class UsersController extends Controller
     #[OAT\Parameter(name: 'per_page', description: 'Number of users per page', required: false, schema: new OAT\Schema(type: 'integer'))]
     #[OAT\Parameter(name: 'order', description: 'Order users by tag', required: false, schema: new OAT\Schema(type: 'string'))]
     #[OAT\Parameter(name: 'sort', description: 'Sort users by order', required: false, schema: new OAT\Schema(type: 'string'))]
-    public function index(GetUsersRequest $request): Response
+    public function index(GetAllRequest $request): Response
     {
-        $validated = $request->validated();
-        $response = $this->usersService->all($validated);
+        //get only validated data from FormRequest
+        $data = $request->validated();
+        $response = $this->usersService->getAll($data);
         return response($response);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param SaveRequest $request
+     * @param PostRequest $request
      *
      * @return Response
      */
@@ -54,34 +57,36 @@ class UsersController extends Controller
     #[OAT\Parameter(name: 'comment', description: 'The comment for user description', required: false, schema: new OAT\Schema(type: 'string'))]
     #[OAT\Parameter(name: 'email', description: 'The user email', required: false, schema: new OAT\Schema(type: 'string'))]
     #[OAT\Parameter(name: 'password', description: 'The user password', required: false, schema: new OAT\Schema(type: 'string'))]
-    public function store(SaveRequest $request): Response
+    public function store(PostRequest $request): Response
     {
-        $validated = $request->validated();
-        $response = $this->usersService->save($validated);
+        //get only validated data from FormRequest
+        $data = $request->validated();
+        $response = $this->usersService->save($data);
         return response($response);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param GetUserRequest $request
+     * @param GetRequest $request
      *
      * @return Response
      */
     #[OAT\Get(path: '/api/user/{id}')]
     #[OAT\Response(response: '200', description: 'Show user by id', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
     #[OAT\Parameter(name: 'id', description: 'The user id', required: true, schema: new OAT\Schema(type: 'integer'))]
-    public function show(GetUserRequest $request): Response
+    public function show(GetRequest $request): Response
     {
-        $validated = $request->validated();
-        $response = $this->usersService->getById($validated['id']);
+        //get only validated data from FormRequest
+        $data = $request->validated();
+        $response = $this->usersService->getById($data['id']);
         return response($response);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateRequest $request
+     * @param Request $request
      *
      * @return Response
      */
@@ -93,11 +98,20 @@ class UsersController extends Controller
     #[OAT\Parameter(name: 'comment', description: 'The comment for user description', required: false, schema: new OAT\Schema(type: 'string'))]
     #[OAT\Parameter(name: 'email', description: 'The user email', required: false, schema: new OAT\Schema(type: 'string'))]
     #[OAT\Parameter(name: 'password', description: 'The user password', required: false, schema: new OAT\Schema(type: 'string'))]
-    public function update(UpdateRequest $request): Response
+    public function update($id, Request $request): Response
     {
-        $validated = $request->validated();
-        $this->usersService->update($validated);
-        return response([]);
+        //get only validated data from FormRequest
+        $request->merge(['id' => $id]);
+        $data = $request->all();
+        try {
+            $result['data'] = $this->usersService->update($data);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response($result, $result['status'] ?? 200);
     }
 
     /**
@@ -110,10 +124,19 @@ class UsersController extends Controller
     #[OAT\Delete(path: '/api/user/{id}')]
     #[OAT\Response(response: '200', description: 'Delete user by id', content: new OAT\JsonContent(ref: '#/components/schemas/users'))]
     #[OAT\Parameter(name: 'id', description: 'The user id', required: true, schema: new OAT\Schema(type: 'integer'))]
-    public function destroy(DeleteRequest $request): Response
+    public function destroy($id, Request $request): Response
     {
-        $validated = $request->validated();
-        $this->usersService->delete($validated['id']);
-        return response([]);
+        $request->merge(['id' => $id]);
+        //get only validated data from FormRequest
+        $data = $request->all();
+        try {
+            $result['data'] = $this->usersService->delete($data['id']);
+        } catch (Exception $e) {
+            $result = [
+                'status' => 500,
+                'error' => $e->getMessage()
+            ];
+        }
+        return response($result, $result['status'] ?? 200);
     }
 }

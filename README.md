@@ -13,8 +13,11 @@ REST API on Laravel with project containerization
 7) run ```npm run dev```
 
 ### or use Docker Compose
-> [!WARNING]
-> Attention .env file is already configured to work with the docker container
+> [!Warning]
+> DON'T USE this Docker config file for product, it is legal only for local dev
+
+> [!NOTE]
+> .env file is already configured to work with the docker container
 1) run ```npm install```
 2) run ```composer install```
 3) run ```docker-compose up -d --build app```
